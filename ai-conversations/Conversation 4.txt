@@ -1,0 +1,354 @@
+me: how to use re in python
+ai: The re module in Python is used for regular expressions, which allow you to search, match, and manipulate text patterns. It’s very powerful for tasks like validating input, extracting information, or replacing text.
+
+Here’s a clear guide:
+
+1️⃣ Import the Module
+import re
+
+2️⃣ Basic Functions in re
+a) re.match()
+
+Checks if a pattern matches at the beginning of a string.
+
+text = "Hello123"
+pattern = r"\w+"  # \w = word character, + = 1 or more
+
+match = re.match(pattern, text)
+
+if match:
+    print("Matched:", match.group())
+
+
+match.group() → returns the matched text.
+
+Only checks from the start of the string.
+
+b) re.search()
+
+Searches the whole string for the pattern.
+
+text = "My number is 12345"
+pattern = r"\d+"  # \d = digit
+
+search = re.search(pattern, text)
+
+if search:
+    print("Found number:", search.group())
+
+
+re.search() finds the first match anywhere in the string.
+
+c) re.findall()
+
+Finds all occurrences of a pattern.
+
+text = "I have 2 cats and 3 dogs"
+pattern = r"\d+"
+
+numbers = re.findall(pattern, text)
+print(numbers)  # ['2', '3']
+
+d) re.sub()
+
+Replace text matching a pattern.
+
+text = "Hello 123, bye 456"
+pattern = r"\d+"
+new_text = re.sub(pattern, "NUMBER", text)
+print(new_text)  # "Hello NUMBER, bye NUMBER"
+
+e) re.split()
+
+Split a string by a pattern.
+
+text = "apple,banana;orange|grape"
+pattern = r"[,;|]"
+
+fruits = re.split(pattern, text)
+print(fruits)  # ['apple', 'banana', 'orange', 'grape']
+
+3️⃣ Common Regular Expression Symbols
+Symbol	Meaning
+.	Any character except newline
+^	Start of string
+$	End of string
+\d	Digit (0-9)
+\D	Non-digit
+\w	Word character (letters, digits, _)
+\W	Non-word character
+\s	Whitespace
+\S	Non-whitespace
++	1 or more occurrences
+*	0 or more occurrences
+?	0 or 1 occurrence
+{n}	Exactly n occurrences
+[]	Character set, e.g., [a-z]
+()	Grouping
+Example: Extract Temperature from String
+import re
+
+text = "Today's temperature is 25°C and tomorrow 28°C."
+pattern = r"\d+°C"
+
+temps = re.findall(pattern, text)
+print(temps)  # ['25°C', '28°C']
+
+✅ Summary
+
+Import with import re.
+
+Use match, search, findall, sub, split to manipulate text.
+
+Regular expressions are patterns to match text.
+
+Combine with Python strings to extract or clean data efficiently.
+
+me: how regular expression works to parse a question
+ai: Regular expressions (regex) are a powerful way to parse and extract patterns from text, including questions. When you “parse a question,” you’re typically looking for keywords, numbers, dates, or specific formats. Regex works by defining a pattern that matches the text you want to extract.
+
+Here’s a step-by-step explanation with examples:
+
+1️⃣ How Regex Works
+
+Define a pattern that describes what you want to find.
+
+Apply the pattern to the string using functions like re.search(), re.findall(), or re.match().
+
+Extract matched text from the result.
+
+2️⃣ Example 1: Extract Numbers from a Question
+
+Suppose the question is:
+
+question = "What is the temperature today in Sydney? It is 25°C."
+
+
+Use regex to extract numbers:
+
+import re
+
+pattern = r"\d+"  # matches 1 or more digits
+numbers = re.findall(pattern, question)
+
+print(numbers)  # ['25']
+
+
+\d+ → matches any consecutive digits
+
+findall → finds all occurrences
+
+3️⃣ Example 2: Extract Units (like °C or mm)
+pattern = r"\d+°C"  # match temperature with °C
+temps = re.findall(pattern, question)
+print(temps)  # ['25°C']
+
+4️⃣ Example 3: Extract Keywords from a Question
+
+Suppose we want to find question type keywords like “temperature” or “precipitation”:
+
+pattern = r"\b(temperature|precipitation)\b"
+keywords = re.findall(pattern, question, flags=re.IGNORECASE)
+print(keywords)  # ['temperature']
+
+
+\b → word boundary (matches whole words only)
+
+| → OR operator
+
+flags=re.IGNORECASE → case-insensitive
+
+5️⃣ Example 4: Parsing Multiple Questions
+questions = [
+    "What is the temperature in Dhaka today?",
+    "Show me the precipitation for Sydney.",
+    "How hot will it be in Melbourne tomorrow?"
+]
+
+# Pattern to detect weather-related keywords
+pattern = r"\b(temperature|precipitation|hot|cold)\b"
+
+for q in questions:
+    match = re.findall(pattern, q, flags=re.IGNORECASE)
+    print(q, "->", match)
+
+
+Output:
+
+What is the temperature in Dhaka today? -> ['temperature']
+Show me the precipitation for Sydney. -> ['precipitation']
+How hot will it be in Melbourne tomorrow? -> ['hot']
+
+✅ Summary of Parsing a Question Using Regex
+
+Identify the pattern you want (numbers, words, units).
+
+Use re.search() or re.findall() to find matches.
+
+Use groups () if you want to extract parts of the match.
+
+Regex allows flexible, automated extraction from any text.
+
+me: how can i parse a question like weather of perth today
+ai: Parsing a question like "weather of Perth today" means extracting the key pieces of information from it:
+
+City/location → Perth
+
+Parameter → temperature, precipitation, or just “weather”
+
+Date/time → today, tomorrow, or a specific date
+
+You can do this in Python using regular expressions (re) or simple string manipulation.
+
+1️⃣ Using Regex
+import re
+
+question = "weather of Perth today"
+
+# Pattern to extract city (assuming one word) and date keyword
+pattern = r"weather of (\w+) (today|tomorrow)?"
+
+match = re.search(pattern, question, flags=re.IGNORECASE)
+
+if match:
+    city = match.group(1)
+    day = match.group(2) if match.group(2) else "today"
+    print("City:", city)
+    print("Day:", day)
+
+
+Output:
+
+City: Perth
+Day: today
+
+
+✅ Explanation:
+
+(\w+) → captures the city name (one word)
+
+(today|tomorrow)? → optionally captures “today” or “tomorrow”
+
+match.group(1) → first captured group (city)
+
+match.group(2) → second captured group (day)
+
+2️⃣ Using Keywords Without Regex
+question = "weather of Perth today".lower()
+
+# Possible days
+days = ["today", "tomorrow"]
+
+# Extract day
+day = next((d for d in days if d in question), "today")
+
+# Extract city by removing keywords
+city = question.replace("weather of", "").replace(day, "").strip().title()
+
+print("City:", city)
+print("Day:", day)
+
+
+Output:
+
+City: Perth
+Day: today
+
+
+✅ Explanation:
+
+Convert to lowercase for consistent matching
+
+Check for day keywords (today, tomorrow)
+
+Remove known words to isolate city
+
+
+me: do we need to divide the question?
+ai: Not necessarily, but dividing or breaking down the question can make parsing much easier, especially for natural language input. Think of it as splitting the sentence into meaningful pieces to identify what the user wants.
+
+Here’s how it works in practice:
+
+1️⃣ Why Divide a Question
+
+A question like:
+
+"Weather of Perth today"
+
+
+Contains different pieces of information:
+
+Component	Example Value
+Parameter	weather / temperature / precipitation
+Location / City	Perth
+Date / Time	today / tomorrow
+
+By splitting the question, you can analyze each part separately and map it to your API.
+
+2️⃣ Methods to Divide a Question
+a) Using Regex Groups
+import re
+
+question = "weather of Perth today"
+
+pattern = r"(weather|temperature|precipitation).*of (\w+)\s?(today|tomorrow)?"
+match = re.search(pattern, question, flags=re.IGNORECASE)
+
+if match:
+    param = match.group(1)
+    city = match.group(2)
+    day = match.group(3) if match.group(3) else "today"
+    print(param, city, day)
+
+
+Here, regex automatically divides the sentence into groups.
+
+b) Using String Split / Tokens
+question = "weather of Perth today"
+words = question.lower().split()
+
+# words = ['weather', 'of', 'perth', 'today']
+
+# Identify keywords
+param = next((w for w in words if w in ['weather', 'temperature', 'precipitation']), 'weather')
+day = next((w for w in words if w in ['today', 'tomorrow']), 'today')
+city = [w for w in words if w not in ['weather', 'temperature', 'precipitation', 'of', 'today', 'tomorrow']][0].title()
+
+print(param, city, day)
+
+
+Splitting the sentence into tokens makes it easier to search for keywords.
+
+3️⃣ When You Might Not Divide
+
+If you use a very robust regex, it can capture everything in groups without manual splitting.
+
+But splitting is often easier for dynamic, unpredictable user questions, especially if the sentence structure varies.
+
+✅ Conclusion
+
+Dividing the question is helpful for parsing, but not strictly necessary if your regex or NLP model can capture all required information.
+
+For simple questions like "weather of Perth today", regex groups or string tokens are sufficient.
+
+For more complex or varied sentences, splitting into words (tokens) is usually more reliable.
+
+me: do I need to follow a structured way of question to follow
+ai: Not strictly, but it helps a lot if your questions follow a predictable structure, especially when using simple parsing techniques like regex or string matching. Let me break it down:
+
+1️⃣ Structured Questions vs. Natural Language
+
+Structured question (easy to parse):
+
+"Weather of Perth today"
+"Temperature in Sydney tomorrow"
+"Precipitation in Melbourne today"
+
+
+✅ Advantages:
+
+Easy to extract city, parameter, and day using regex or string split.
+
+Less chance of errors.
+
+Works reliably without advanced NLP.
